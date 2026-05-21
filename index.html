@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>English Part of Speech Quiz</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .card { border: 1px solid #add; padding: 20px; border-radius: 80px; }
+        button { margin: 5px; padding: 10px 20px; cursor: pointer; }
+        .correct { color: green; }
+        .wrong { color: red; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Part of Speech Quiz</h2>
+        <p id="sentence">Loading...</p>
+        <div id="option"></div>
+        <p id="result"></p>
+        <button onclick="loadQuiz()">Next Question</button>
+    </div>
+
+    <script>
+        async function loadQuiz() {
+            document.getElementById('result').textContent ='';
+            const res = await fetch('/api/quiz');
+            const data = await res.json();
+
+            document.getElementById('sentence'). textContent = data.sentence;
+            const optionDiv = document.getElementById('options');
+            optionDiv.innerHTML = '';
+
+            data.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(opt, data.answer);
+                optionDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, answer) {
+            const result = document.getElementById('result');
+            if (selected === answer) {
+                result.textContent = 'Correct!' + select + ' is right.';
+                result.className = 'correct';
+            } else {
+                result.textContent = 'Wrong. The answer is ' + answer;
+                result.className = 'wrong';
+            }
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>
